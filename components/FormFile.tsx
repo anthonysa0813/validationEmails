@@ -60,7 +60,7 @@ const FormFile = () => {
     >
       <div className="flex flex-col items-start gap-0 mt-3">
         {!isValidateFieldsFile && (
-          <h2 className="text-white">Campos inválidos....</h2>
+          <h2 className="text-red-500">Campos requeridos (lote & correo)</h2>
         )}
         <span className="text-red-200">Sube un archivo en formato: xlsx</span>
         <input
