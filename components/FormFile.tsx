@@ -7,7 +7,12 @@ import React, {
   useState,
 } from "react";
 import readXlsxFile from "read-excel-file";
+
 import { ObjectEmail } from "../intefaces/index";
+import { sendEmailArr } from "../utils/apisFunctions";
+import Image from "next/image";
+
+interface PropFile {}
 
 const FormFile = () => {
   const [isDesabled, setIsDesabled] = useState(true);
@@ -18,6 +23,8 @@ const FormFile = () => {
   const [arrObjectsEmail, setArrObjectsEmail] = useState<ObjectEmail[] | []>(
     []
   );
+  const [statusDataSend, setStatusDataSend] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
 
   useEffect(() => {
     if (valueFile) {
@@ -45,7 +52,13 @@ const FormFile = () => {
               };
             }
           });
-          console.log("new arr", newArr);
+
+          const copyNewArr = newArr.slice(1, newArr.length - 1);
+          setStatusLoading(true);
+          sendEmailArr(copyNewArr).then((res: any) => {
+            setStatusDataSend(res.status);
+            setStatusLoading(false);
+          });
         } else {
           setIsValidateFieldsFile(false);
         }
@@ -54,50 +67,65 @@ const FormFile = () => {
   };
 
   return (
-    <form
-      className="block flex flex-col items-center gap-4"
-      onSubmit={onSubmit}
-    >
-      <div className="flex flex-col items-start gap-0 mt-3">
-        {!isValidateFieldsFile && (
-          <h2 className="text-red-500">Campos requeridos (lote & correo)</h2>
-        )}
-        <span className="text-red-200">Sube un archivo en formato: xlsx</span>
-        <input
-          ref={refInput}
-          type="file"
-          className="bg-blue-500 rounded-md mt-3 
-                file:bg-gradient-to-b
-                  file:from-blue-500
-                  file:to-blue-600
-                  file:border-none
-                  file:text-white
-                  file:cursor-pointer
-                  file:shadow-sm
-                  file:shadow-bluw-600/50
-                  w-full
-                  lg:w-auto
-                  text-white/80
-                  p-1
-                  m-0
-                  mt-0
-                  "
-          onChange={(e) => {
-            console.log(e);
-            setValueFile(e.target.value);
-          }}
-        />
-      </div>
-      <button
-        type="submit"
-        className={`text-white p-2 rounded-md  ${
-          isDesabled ? "bg-gray-400 " : "bg-green-500"
-        }`}
-        disabled={isDesabled}
-      >
-        Validar
-      </button>
-    </form>
+    <>
+      {statusLoading && (
+        <div className="flex flex-col items-center p-4">
+          <h1 className="text-3xl text-center">Subiendo la data....</h1>
+          <Image
+            alt="Gifs de success"
+            src="/images/up.gif"
+            height={200}
+            width={200}
+            className="text-white"
+          />
+        </div>
+      )}
+      {!statusDataSend ? (
+        <form
+          className="flex flex-col items-center block gap-4"
+          onSubmit={onSubmit}
+        >
+          <div className="flex flex-col items-start gap-0 mt-3">
+            {!isValidateFieldsFile && (
+              <h2 className="text-red-700">
+                Campos requeridos (lote & correo)
+              </h2>
+            )}
+            <span className="text-red-600">
+              Sube un archivo en formato: xlsx
+            </span>
+            <input
+              ref={refInput}
+              type="file"
+              className="w-full p-1 m-0 mt-0 mt-3 bg-blue-500 rounded-md file:bg-gradient-to-b file:from-blue-500 file:to-blue-600 file:border-none file:text-white file:cursor-pointer file:shadow-sm file:shadow-bluw-600/50 lg:w-auto text-white/80 "
+              onChange={(e) => {
+                console.log(e);
+                setValueFile(e.target.value);
+              }}
+            />
+          </div>
+          <button
+            type="submit"
+            className={`text-white p-2 rounded-md  ${
+              isDesabled ? "bg-gray-400 " : "bg-green-500"
+            }`}
+            disabled={isDesabled}
+          >
+            Validar
+          </button>
+        </form>
+      ) : (
+        <div className="flex justify-center">
+          <Image
+            alt="Gifs de success"
+            src="/images/check.gif"
+            height={200}
+            width={200}
+            className="text-white"
+          />
+        </div>
+      )}
+    </>
   );
 };
 
