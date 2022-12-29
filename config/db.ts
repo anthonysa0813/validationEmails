@@ -1,13 +1,14 @@
 import { createPool } from "mysql2/promise";
+console.log(process.env.DB_HOST);
+console.log(process.env.DB_USER);
+console.log(process.env.DB_PASSWORD);
 
 const pool = createPool({
-  host: "172.25.120.14",
-  user: "desarrollo",
-  password: "D3s4rrollo2023",
-  port: 3306,
-  database: "DESARROLLO",
+  host: process.env.DB_HOST,
+  user: process.env.USER,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
+  database: process.env.DB_DATABASE,
 });
-
-console.log(pool);
 
 export { pool };
