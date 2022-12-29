@@ -8,4 +8,6 @@ const pool = createPool({
   database: "DESARROLLO",
 });
 
+console.log(pool);
+
 export { pool };

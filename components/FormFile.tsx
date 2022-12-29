@@ -27,6 +27,10 @@ const FormFile = () => {
   const [statusLoading, setStatusLoading] = useState(false);
 
   useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_ANALYTICS_ID);
+  }, []);
+
+  useEffect(() => {
     if (valueFile) {
       const nameExtension = valueFile.split(".")[1];
       console.log(nameExtension);
